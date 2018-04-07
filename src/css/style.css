@@ -1,0 +1,131 @@
+
+html {
+    background: #000623;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: #000623;
+    overflow: hidden;
+    font-family: "gameWebFont";
+}
+
+#game {
+    overflow: hidden;
+    opacity: 0;
+}
+
+#game canvas {
+    cursor: url("../image/cr/cursor.png"), default;
+}
+
+#screenWarning {
+    display: none;
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    top: 20%;
+    left: 50%;
+    margin: 0 0 0 -20px;
+    background: url("../image/orientationLock.png") center no-repeat;
+    background-size: contain;
+    opacity: 0.1;
+    animation-name: fadeInMin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}
+
+#loading {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    bottom: 20%;
+    left: 50%;
+    margin: -50px 0 0 -50px;
+}
+
+#load {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    top: 32%;
+    font-size: 20px;
+    color: #000623;
+    animation: sk-bounce 1s 300ms infinite ease-in-out;
+}
+
+.double-bounce1, .double-bounce2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: sk-bounce 1s infinite ease-in-out;
+}
+
+.double-bounce2 {
+    animation-delay: -700ms;
+}
+
+@keyframes sk-bounce {
+    0%, 100% {
+        transform: scale(0.6);
+    }
+    50% {
+        transform: scale(1.0);
+    }
+}
+
+.fadeIn, .fadeOut {
+    animation-duration: 2s;
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+}
+
+.fadeIn {
+    animation-name: fadeIn;
+}
+
+.fadeOut {
+    animation-name: fadeOut;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeInMin {
+    from {
+        transform: scale(1);
+        opacity: 0.1;
+    }
+    to {
+        transform: scale(1.1);
+        opacity: 0.4;
+    }
+}
+
+@media only screen and (orientation: landscape) and (max-width: 640px) {
+    #screenWarning {
+        display: block !important;
+    }
+}
