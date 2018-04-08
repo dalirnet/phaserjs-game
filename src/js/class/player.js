@@ -6,8 +6,8 @@ class Player {
         this.name        = "";
         this.saveCoins   = 0;
         this.activeLevel = 1;
-        this.bodyType    = 2;
-        this.faceType    = 2;
+        this.bodyType    = 4;
+        this.faceType    = 1;
         this.beardType   = 2;
         this.eyesType    = 1;
         this.optic       = 1;

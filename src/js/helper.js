@@ -82,9 +82,9 @@ const helper = {
 
         let screenWidth  = width * devicePixelRatio;
         let screenHeight = height * devicePixelRatio;
-        let scaleUnit    = 1024 / 0.9;
+        let scaleUnit    = 1024 / 0.8;
         if (helper.isMobile()) {
-            scaleUnit = scaleUnit * 0.70;
+            scaleUnit = scaleUnit * 0.60;
         }
         return {
             width : screenWidth,

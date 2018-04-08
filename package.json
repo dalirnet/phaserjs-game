@@ -4,6 +4,7 @@
   "description": "",
   "main": "gulpfile.js",
   "dependencies": {
+    "jquery": "^3.3.1",
     "phaser-ce": "^2.10.3"
   },
   "devDependencies": {

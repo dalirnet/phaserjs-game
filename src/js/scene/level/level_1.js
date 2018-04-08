@@ -12,7 +12,7 @@ class Level_1 extends Level {
         // init player
         this.game.player.create(this);
         this.game.player.idle();
-        
+
 
         // init game Space
         this.initGameSpace();
@@ -22,6 +22,9 @@ class Level_1 extends Level {
         this.addBaseTile();
         this.addBaseTile();
         this.addMainTile("_1_00");
+        this.addBaseTile();
+        this.addBaseTile();
+        this.addBaseTile();
         this.addBaseTile();
         this.addBaseTile();
         this.addMainTile("_2_00");
@@ -36,6 +39,8 @@ class Level_1 extends Level {
 
         // show state
         this.showState();
+
+        //this.animation.loadEditor();
     }
 
     update() {

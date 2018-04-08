@@ -1,5 +1,6 @@
 const Notify     = require("./notify");
 const DragEffect = require("./dragEffect");
+const Animation  = require("./animation");
 const helper     = require("../helper");
 
 class Scene {
@@ -15,6 +16,9 @@ class Scene {
 
         // load dragEffect instance
         this.dragEffect = new DragEffect(this);
+
+        // load animation instance
+        this.animation = new Animation(this);
     }
 
     preload(loadAssets = true, loadPlayer = true) {
