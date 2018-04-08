@@ -1,6 +1,5 @@
 class AnimationEditor {
     constructor(state, key) {
-
         // init may var
         this.state = state;
         this.key   = key;
@@ -10,8 +9,13 @@ class AnimationEditor {
     }
 
     load(object) {
+        // init may var
+        let that     = this;
+        this.frameTd = [];
+
         // add object
-        this.object = object;
+        this.object       = object;
+        this.defualtFrame = this.object.frame;
 
         // calc
         this.frame = this.object.second * this.object.fps;
@@ -24,11 +28,57 @@ class AnimationEditor {
         this.editor.setAttribute("id", "animationEditor");
         document.getElementsByTagName("body")[0].appendChild(this.editor);
 
-        // run
-        this.run();
+        // start editor ui
+        this.start();
+
+        // add run btn
+        this.runBtn = document.createElement("button");
+        this.runBtn.setAttribute("id", "runBtn");
+        this.runBtn.innerText = "start";
+
+        this.renderBtn = document.createElement("button");
+        this.renderBtn.setAttribute("id", "renderBtn");
+        this.renderBtn.innerText = "render";
+
+        // var init
+        this.timeLineIsRun = false;
+        this.timer         = 0;
+        this.setFrameIndex = 1;
+
+        // add event
+        this.runBtn.addEventListener("click", () => {
+            if (this.timeLineIsRun) {
+                clearInterval(this.timer);
+                this.timeLineIsRun    = false;
+                this.runBtn.innerText = "start";
+            }
+            else {
+                this.timeLineIsRun    = true;
+                this.runBtn.innerText = "stop";
+                this.timer            = setInterval(() => {
+                    if (this.setFrameIndex > this.frame) {
+                        clearInterval(this.timer);
+                        this.timeLineIsRun    = false;
+                        this.runBtn.innerText = "start";
+                        this.setFrameIndex    = 1;
+                    }
+                    else {
+                        that.setFrame(this.setFrameIndex);
+                        this.setFrameIndex++;
+                    }
+                }, ((this.object.second * 1000) / this.frame));
+            }
+        });
+        this.renderBtn.addEventListener("click", () => {
+            that.getRender();
+        });
+
+        // add btn to dom
+        this.editor.appendChild(this.runBtn);
+        this.editor.appendChild(this.renderBtn);
     }
 
-    run() {
+    start() {
         // init var
         let that = this;
 
@@ -48,12 +98,13 @@ class AnimationEditor {
             }
             else {
                 span.innerText = `F ${i}`;
+                this.frameTd.push(cell);
             }
             cell.appendChild(span);
         }
 
         // add row and cell
-        this.object.forEach((v, index) => {
+        this.object.config.forEach((v, index) => {
             v[1].forEach((_v, _i) => {
                 let row = that.table.insertRow();
                 for (let i = -1; i <= this.frame; i++) {
@@ -61,7 +112,7 @@ class AnimationEditor {
                     if (i === -1) {
                         if (_i === 0) {
                             let span       = document.createElement("span");
-                            span.innerText = v[1];
+                            span.innerText = v[0];
                             cell.appendChild(span);
                         }
                     }
@@ -72,15 +123,41 @@ class AnimationEditor {
                     }
                     else {
                         let input = document.createElement("input");
-                        input.setAttribute("class", `frame_${i}`);
-                        input.setAttribute("id", `frame_${i}_${v[0]}_${_v}`);
-                        input.type  = "number";
-                        input.step  = "0.01";
-                        input.value = Math.floor(that.state.target[v[0]][_v] * 100) / 100;
+                        input.setAttribute("id", `frame_${i}__${v[0]}_${_v}`);
+                        input.type = "number";
+                        if (_v === "rotation") {
+                            input.step  = "0.01";
+                            input.value = Math.floor(that.state.target[v[0]][_v] * 100) / 100;
+                            if (that.defualtFrame.hasOwnProperty(i)) {
+                                if (that.defualtFrame.hasOwnProperty(i)) {
+                                    that.defualtFrame[i].forEach((frameValue, frameIndex) => {
+                                        if ((frameValue[0] === v[0]) && (frameValue[1] === _v)) {
+                                            input.value = Math.floor(frameValue[2] * 100) / 100;
+                                            input.setAttribute("class", "change");
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        else {
+                            input.step  = "1";
+                            input.value = Math.floor(that.state.target[v[0]][_v]);
+                            if (that.defualtFrame.hasOwnProperty(i)) {
+                                if (that.defualtFrame.hasOwnProperty(i)) {
+                                    that.defualtFrame[i].forEach((frameValue, frameIndex) => {
+                                        if ((frameValue[0] === v[0]) && (frameValue[1] === _v)) {
+                                            input.value = Math.floor(frameValue[2]);
+                                            input.setAttribute("class", "change");
+                                        }
+                                    });
+                                }
+                            }
+                        }
                         input.addEventListener("focus", () => {
                             that.setFrame(i);
                         });
                         input.addEventListener("change", () => {
+                            input.setAttribute("class", "change");
                             that.state.target[v[0]][_v] = input.value;
                         });
                         cell.appendChild(input);
@@ -97,11 +174,50 @@ class AnimationEditor {
 
     setFrame(index) {
         let that = this;
-        this.object.forEach((v, i) => {
+        this.object.config.forEach((v, i) => {
             v[1].forEach((_v, _i) => {
-                that.state.target[v[0]][_v] = document.getElementById(`frame_${index}_${v[0]}_${_v}`).value;
+                that.state.target[v[0]][_v] = document.getElementById(`frame_${index}__${v[0]}_${_v}`).value;
             });
         })
+        this.activeFrame(index);
+    }
+
+    activeFrame(frame = 1) {
+        this.frameTd.forEach((v, i) => {
+            if ((frame - 1) === i) {
+                v.setAttribute("class", "active");
+            }
+            else {
+                v.setAttribute("class", "");
+            }
+        });
+    }
+
+    getRender() {
+        let that   = this;
+        let object = {};
+
+        // init object structure
+        for (let i = 1; i <= this.frame; i++) {
+            object[i] = [];
+        }
+
+        // fill object
+        this.object.config.forEach((v, i) => {
+            v[1].forEach((_v, _i) => {
+                for (let index = 1; index <= this.frame; index++) {
+                    let el = document.getElementById(`frame_${index}__${v[0]}_${_v}`);
+                    if (el.hasAttribute("class")) {
+                        if (el.getAttribute("class") === "change") {
+                            object[index].push([v[0], _v, el.value]);
+                        }
+                    }
+                }
+            });
+        });
+
+        // alert json object
+        alert(object.toSource());
     }
 
     addStyle() {
@@ -129,6 +245,20 @@ class AnimationEditor {
             background: rgba(255,255,255,0.7);
             padding: 10px;
         }
+        #runBtn {
+            position: absolute;
+            width: 100px;
+            bottom:0;
+            left: 50%;
+            margin-left: -105px;
+        }
+        #renderBtn {
+            position: absolute;
+            width: 100px;
+            bottom:0;
+            left: 50%;
+            margin-left: 5px;
+        }
         input {
             direction: ltr;
             width: 70px;
@@ -145,12 +275,12 @@ class AnimationEditor {
             background: #242424;
             color: #fff;
         }
-        table tr td:first-child {
-            text-align: left;
-        }
         td {
             text-align: center;
             vertical-align: middle;
+        }
+        td.active {
+            background: #a22222;
         }
         .break {
             display: inline-block;

@@ -92,7 +92,9 @@ gulp.task("default", [
         "src/js/*.js",
         "src/js/scene/*.js",
         "src/js/scene/level/*.js",
-        "src/js/class/*.js"
+        "src/js/class/*.js",
+        "src/js/class/animation/player/*.js",
+        "src/js/class/animation/player/object/*.js"
     ], ["js-watch"]);
 
     gulp.watch([

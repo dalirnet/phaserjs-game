@@ -1,4 +1,5 @@
-const helper = require("../helper");
+const PlayerAnimationClass = require("./animation/player/PlayerAnimationClass");
+const helper               = require("../helper");
 
 class Player {
     constructor(game) {
@@ -6,15 +7,19 @@ class Player {
         this.name        = "";
         this.saveCoins   = 0;
         this.activeLevel = 1;
-        this.bodyType    = 4;
+        this.bodyType    = 1;
         this.faceType    = 1;
-        this.beardType   = 2;
+        this.beardType   = 4;
         this.eyesType    = 1;
         this.optic       = 1;
         this.idleAnimate = [];
+
+        // animation handel
+        this.animationHandel = false;
     }
 
     preload() {
+        // load player spriteSheet
         this.game.load.atlasJSONHash("player", "dist/image/player.png", "dist/json/player.json");
     }
 
@@ -69,18 +74,27 @@ class Player {
         this.bodyGroup.scale.setTo(this.game.screenScale * 0.16, this.game.screenScale * 0.16);
     }
 
-    idle(start = true) {
-        if (start) {
-            this.idleAnimate.push(this.game.add.tween(this.game.player.upperBodyGroup).to({rotation: 0.03}, 700, "Linear", true, 0, -1, true));
-            this.idleAnimate.push(this.game.add.tween(this.game.player.headGroup).to({rotation: 0.04}, 500, "Linear", true, 0, -1, true));
-            this.idleAnimate.push(this.game.add.tween(this.game.player.rightHandBottom).to({rotation: 0.08}, 600, "Linear", true, 200, -1, true));
-            this.idleAnimate.push(this.game.add.tween(this.game.player.leftHandBottom).to({rotation: 0.08}, 600, "Linear", true, 0, -1, true));
+    initAnimation() {
+        // add animation class
+        this.animation = new PlayerAnimationClass(this.state);
+
+        // handel animation object
+        this.animationHandel = true;
+    }
+
+    checkForAnimationHandel() {
+        if (!this.animationHandel) {
+            this.initAnimation();
+        }
+    }
+
+    idle(status = true, resetFrame = false) {
+        this.checkForAnimationHandel();
+        if (status) {
+            this.animation.start("idle");
         }
         else {
-            this.game.player.upperBodyGroup.rotation = 0;
-            this.idleAnimate.forEach(function (v, i) {
-                v.stop();
-            });
+            this.animation.stop("idle", resetFrame);
         }
     }
 

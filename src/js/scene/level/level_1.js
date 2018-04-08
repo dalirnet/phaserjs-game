@@ -7,11 +7,13 @@ class Level_1 extends Level {
     }
 
     create() {
+        // call super
         super.create();
 
-        // init player
-        this.game.player.create(this);
-        this.game.player.idle();
+        // init var
+        let that = this;
+
+
 
 
         // init game Space
@@ -21,18 +23,16 @@ class Level_1 extends Level {
         this.addBaseTile();
         this.addBaseTile();
         this.addBaseTile();
-        this.addMainTile("_1_00");
-        this.addBaseTile();
-        this.addBaseTile();
+        this.addMainTile("_1_00", () => {
+            this.game.player.idle();
+        });
         this.addBaseTile();
         this.addBaseTile();
         this.addBaseTile();
         this.addMainTile("_2_00");
 
         // add player to game space
-        this.addPlayer();
-
-        this.movePlayer();
+        this.addPlayer(0);
 
         // draggable game space
         this.gameSpaceDraggable();

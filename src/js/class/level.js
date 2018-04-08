@@ -3,6 +3,7 @@ const helper = require("../helper");
 
 class Level extends Scene {
     preload() {
+        // call super
         super.preload();
 
         // load image
@@ -16,8 +17,16 @@ class Level extends Scene {
         this.leftSpace      = this.tileLeftMargin * 4;
     }
 
+    create() {
+        super.create();
+
+        // create player
+        this.game.player.create(this);
+    }
+
     initGameSpace() {
 
+        // set default current scale
         this.currentScale = {
             main: this.game.screenScale * 0.3,
             base: this.game.screenScale * 0.45
@@ -76,7 +85,7 @@ class Level extends Scene {
         });
     }
 
-    addMainTile(id) {
+    addMainTile(id, func = false) {
         let tile = this.game.add.sprite(this.leftSpace, 0, "tile", id);
         tile.anchor.setTo(0, 1);
         tile.scale.setTo(this.currentScale.main, this.currentScale.main);
@@ -86,7 +95,9 @@ class Level extends Scene {
         tile.input.useHandCursor     = true;
         tile.input.priorityID        = 10;
         tile.events.onInputDown.add(function () {
-            console.log("ok");
+            if (typeof func === "function") {
+                func();
+            }
         });
 
         // add
@@ -97,10 +108,16 @@ class Level extends Scene {
         this.leftSpace += tile.width + this.tileLeftMargin;
     }
 
-    addBaseTile(id = "_0_12") {
+    addBaseTile(id = true, func = false) {
         let that      = this;
         let thisIndex = this.tileBaseIndex;
-        let tile      = this.game.add.sprite(this.leftSpace, (this.game.rnd.integerInRange(1, 25) * this.game.screenScale) * -1, "tileBase", id);
+
+        // default base tile texture
+        if (id === true) {
+            id = "_0_12";
+        }
+
+        let tile = this.game.add.sprite(this.leftSpace, (this.game.rnd.integerInRange(1, 25) * this.game.screenScale) * -1, "tileBase", id);
         tile.anchor.setTo(0, 1);
         tile.scale.setTo(this.currentScale.base, this.currentScale.base);
         tile.inputEnabled            = true;
@@ -109,6 +126,9 @@ class Level extends Scene {
         tile.input.useHandCursor     = true;
         tile.input.priorityID        = 10;
         tile.events.onInputDown.add(function () {
+            if (typeof func === "function") {
+                func();
+            }
             that.movePlayer(thisIndex);
         });
 
@@ -121,8 +141,12 @@ class Level extends Scene {
         this.leftSpace += tile.width + this.tileLeftMargin;
     }
 
-    addPlayer() {
+    addPlayer(tileIndex = 0) {
         this.gamePlayeSpace.add(this.game.player.bodyGroup);
+        this.movePlayer(tileIndex);
+
+        // call player animation class
+        this.game.player.initAnimation();
     }
 
     jumpPlayer(id = 0) {
@@ -170,10 +194,6 @@ class Level extends Scene {
         let tilePos                  = this.gameTile[`tileBase${id}`];
         this.game.player.bodyGroup.x = tilePos.x + (tilePos.width * 0.4);
         this.game.player.bodyGroup.y = tilePos.y - (tilePos.height * 0.5);
-    }
-
-    create() {
-        super.create();
     }
 
     update() {
