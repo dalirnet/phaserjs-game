@@ -15,6 +15,7 @@ class Level extends Scene {
         this.tileBaseIndex  = 0;
         this.tileLeftMargin = 10 * this.game.screenScale;
         this.leftSpace      = this.tileLeftMargin * 4;
+        this.enterTile      = -1;
     }
 
     create() {
@@ -129,7 +130,7 @@ class Level extends Scene {
             if (typeof func === "function") {
                 func();
             }
-            that.movePlayer(thisIndex);
+            that.movePlayer(thisIndex, true);
         });
 
         // add
@@ -143,10 +144,13 @@ class Level extends Scene {
 
     addPlayer(tileIndex = 0) {
         this.gamePlayeSpace.add(this.game.player.bodyGroup);
-        this.movePlayer(tileIndex);
+        this.movePlayer(tileIndex, false);
 
         // call player animation class
         this.game.player.initAnimation();
+
+        // run idle animate
+        this.game.player.idle();
     }
 
     jumpPlayer(id = 0) {
@@ -190,10 +194,40 @@ class Level extends Scene {
 
     }
 
-    movePlayer(id = 0) {
-        let tilePos                  = this.gameTile[`tileBase${id}`];
-        this.game.player.bodyGroup.x = tilePos.x + (tilePos.width * 0.4);
-        this.game.player.bodyGroup.y = tilePos.y - (tilePos.height * 0.5);
+    movePlayer(id = 0, jump = true) {
+        if (this.enterTile < id && Math.abs(id - this.enterTile) === 1) {
+            let targetPos = this.gameTile[`tileBase${id}`];
+            if (jump) {
+                this.game.player.idle(false, true);
+                this.game.player.jump();
+                let currentPos = this.gameTile[`tileBase${this.enterTile}`];
+                let startTween = this.game.add.tween(this.game.player.bodyGroup).to({
+                    x: currentPos.x + ((targetPos.x + (targetPos.width * 0.4) - currentPos.x + (currentPos.width * 0.4)) * 0.8),
+                    y: targetPos.y - (targetPos.height * 0.8)
+                }, 300, Phaser.Easing.Linear.None, true);
+                startTween.onComplete.add(() => {
+                    let endTween = this.game.add.tween(this.game.player.bodyGroup).to({
+                        x: targetPos.x + (targetPos.width * 0.4),
+                        y: targetPos.y - (targetPos.height * 0.5)
+                    }, 200, Phaser.Easing.Linear.None, true);
+                    endTween.onComplete.add(() => {
+                        this.game.player.idle();
+                    }, this);
+                }, this);
+            }
+            else {
+                this.game.player.bodyGroup.x = targetPos.x + (targetPos.width * 0.4);
+                this.game.player.bodyGroup.y = targetPos.y - (targetPos.height * 0.5);
+            }
+            this.enterTile = id;
+        }
+        else {
+            this.movePlayerWarning();
+        }
+    }
+
+    movePlayerWarning() {
+
     }
 
     update() {

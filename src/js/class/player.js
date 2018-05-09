@@ -38,7 +38,7 @@ class Player {
         this.leftFootTop     = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_foot_left_top`);
         this.upperBodyGroup  = this.game.make.sprite(0, 0, "player", "group_upperBody");
         this.rightHandGroup  = this.game.make.sprite(137, 205, "player", "group_rightHand");
-        this.rightHandBottom = this.game.make.sprite(0, 104, "player", `body_${this.bodyType}_hand_right_bottom`);
+        this.rightHandBottom = this.game.make.sprite(9, 104, "player", `body_${this.bodyType}_hand_right_bottom`);
         this.rightHandTop    = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_hand_right_top`);
         this.body            = this.game.make.sprite(0, 144, "player", `body_${this.bodyType}_body`);
         this.headGroup       = this.game.make.sprite(27, 0, "player", "group_head");
@@ -98,6 +98,16 @@ class Player {
         }
         else {
             this.animation.stop("idle", resetFrame);
+        }
+    }
+
+    jump(status = true, resetFrame = false) {
+        this.checkForAnimationHandel();
+        if (status) {
+            this.animation.start("jump");
+        }
+        else {
+            this.animation.stop("jump", resetFrame);
         }
     }
 

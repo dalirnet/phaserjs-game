@@ -14,22 +14,24 @@ class Level_1 extends Level {
         let that = this;
 
 
-
-
         // init game Space
         this.initGameSpace();
 
         // add tile
-        this.addBaseTile();
+        this.addBaseTile("_0_11");
         this.addBaseTile();
         this.addBaseTile();
         this.addMainTile("_1_00", () => {
-            this.game.player.idle();
+
         });
         this.addBaseTile();
         this.addBaseTile();
         this.addBaseTile();
-        this.addMainTile("_2_00");
+
+        this.addMainTile("_2_00", () => {
+
+
+        });
 
         // add player to game space
         this.addPlayer(0);

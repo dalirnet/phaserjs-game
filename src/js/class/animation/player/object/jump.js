@@ -1,2 +1,20 @@
 module.exports = {
+    1: [["upperBodyGroup", "rotation", "0.08"], ["lowerBodyGroup", "rotation", "-0.19"], ["headGroup", "rotation", "-0.09"], ["leftHandGroup", "rotation", "-0.19"],
+        ["rightHandGroup", "rotation", "0.05"], ["leftHandBottom", "rotation", "-0.08"], ["rightHandBottom", "rotation", "-0.08"], ["rightFootGroup", "rotation", "-0.02"],
+        ["leftFootBottom", "rotation", "0.31"], ["rightFootBottom", "rotation", "0.12"]],
+    2: [["upperBodyGroup", "rotation", "0.01"], ["lowerBodyGroup", "rotation", "-0.18"], ["headGroup", "rotation", "-0.09"], ["leftHandGroup", "rotation", "-0.37"],
+        ["rightHandGroup", "rotation", "0.16"], ["leftHandBottom", "rotation", "-0.47"], ["rightHandBottom", "rotation", "-0.27"], ["leftFootGroup", "rotation", "0.01"],
+        ["rightFootGroup", "rotation", "-0.19"], ["leftFootBottom", "rotation", "0.34"], ["rightFootBottom", "rotation", "0.29"]],
+    3: [["upperBodyGroup", "rotation", "-0.03"], ["lowerBodyGroup", "rotation", "-0.05"], ["headGroup", "rotation", "-0.09"], ["leftHandGroup", "rotation", "-0.52"],
+        ["rightHandGroup", "rotation", "0.53"], ["leftHandBottom", "rotation", "-0.67"], ["rightHandBottom", "rotation", "-0.47"], ["leftFootGroup", "rotation", "-0.1"],
+        ["rightFootGroup", "rotation", "-0.44"], ["leftFootBottom", "rotation", "0.82"], ["rightFootBottom", "rotation", "0.08"]],
+    4: [["upperBodyGroup", "rotation", "-0.03"], ["lowerBodyGroup", "rotation", "0.09"], ["headGroup", "rotation", "-0.09"], ["leftHandGroup", "rotation", "-0.39"],
+        ["rightHandGroup", "rotation", "0.3"], ["leftHandBottom", "rotation", "-0.56"], ["rightHandBottom", "rotation", "-0.47"], ["leftFootGroup", "rotation", "-0.1"],
+        ["rightFootGroup", "rotation", "-0.44"], ["leftFootBottom", "rotation", "0.82"], ["rightFootBottom", "rotation", "0.08"]],
+    5: [["upperBodyGroup", "rotation", "0.01"], ["lowerBodyGroup", "rotation", "-0.18"], ["headGroup", "rotation", "-0.09"], ["leftHandGroup", "rotation", "-0.37"],
+        ["rightHandGroup", "rotation", "0.16"], ["leftHandBottom", "rotation", "-0.47"], ["rightHandBottom", "rotation", "-0.27"], ["leftFootGroup", "rotation", "0.01"],
+        ["rightFootGroup", "rotation", "-0.19"], ["leftFootBottom", "rotation", "0.34"], ["rightFootBottom", "rotation", "0.29"]],
+    6: [["upperBodyGroup", "rotation", "0.08"], ["lowerBodyGroup", "rotation", "-0.19"], ["headGroup", "rotation", "-0.09"], ["leftHandGroup", "rotation", "-0.19"],
+        ["rightHandGroup", "rotation", "0.05"], ["leftHandBottom", "rotation", "-0.08"], ["rightHandBottom", "rotation", "-0.08"], ["rightFootGroup", "rotation", "-0.02"],
+        ["leftFootBottom", "rotation", "0.31"], ["rightFootBottom", "rotation", "0.12"]]
 };

@@ -4,8 +4,10 @@ class AnimationEditor {
         this.state = state;
         this.key   = key;
 
-        // load editor
-        this.load(this.state.animate[this.key]);
+        // load editor => only desktop
+        if (!this.state.scene.game.isMobile) {
+            this.load(this.state.animate[this.key]);
+        }
     }
 
     load(object) {
@@ -246,7 +248,6 @@ class AnimationEditor {
         #animationEditor {
             position: absolute;
             width: 100%;
-            max-height: 40%;
             left: 0;
             top: 0;
             box-sizing: border-box;

@@ -15,7 +15,7 @@ class PlayerAnimationClass extends Animation {
         this.jumpCreate();
 
         /* comment after debug animation */
-        this.addAnimationEditor("idle");
+        // this.addAnimationEditor("jump");
         /* _____________________________ */
     }
 
@@ -33,20 +33,27 @@ class PlayerAnimationClass extends Animation {
 
         // add this animation
         // {animateKey:string,animateFrame:object,animateTime:int,AnimateLoop:int,animateDelay:int,animateConfig:array}
-        this.addAnimate("idle", idle, 1000, 8, -1, 200, config);
+        this.addAnimate("idle", idle, 1000, 8, -1, 600, config);
     }
 
     jumpCreate() {
         let config = [
-            ["headGroup", ["rotation"]],
-            ["upperBodyGroup", ["rotation"]],
+            ["upperBodyGroup", ["rotation", "y"]],
+            ["lowerBodyGroup", ["rotation", "y"]],
+            ["headGroup", ["rotation", "y"]],
+            ["leftHandGroup", ["rotation"]],
+            ["rightHandGroup", ["rotation"]],
             ["leftHandBottom", ["rotation"]],
-            ["rightHandBottom", ["rotation"]]
+            ["rightHandBottom", ["rotation"]],
+            ["leftFootGroup", ["rotation"]],
+            ["rightFootGroup", ["rotation"]],
+            ["leftFootBottom", ["rotation"]],
+            ["rightFootBottom", ["rotation"]]
         ];
 
         // add this animation
         // {animateKey:string,animateFrame:object,animateTime:int,AnimateLoop:int,animateDelay:int,animateConfig:array}
-        this.addAnimate("jump", jump, 1000, 6, -1, 1000, config);
+        this.addAnimate("jump", jump, 500, 6, 1, 0, config);
     }
 
     /* comment after debug animation */
