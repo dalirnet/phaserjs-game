@@ -11,7 +11,7 @@ class Player {
         this.faceType    = 1;
         this.beardType   = 4;
         this.eyesType    = 1;
-        this.optic       = 1;
+        this.optic       = 0;
         this.idleAnimate = [];
 
         // animation handel
@@ -44,10 +44,13 @@ class Player {
         this.headGroup       = this.game.make.sprite(27, 0, "player", "group_head");
         this.face            = this.game.make.sprite(24, 29, "player", `face_${this.faceType}_${this.beardType}_${this.eyesType}`);
         this.opticOver       = this.game.make.sprite(24, 29, "player", `face_optic`);
-        this.headOver        = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_head_over`);
-        this.leftHandGroup   = this.game.make.sprite(0, 193, "player", "group_leftHand");
-        this.leftHandBottom  = this.game.make.sprite(2, 107, "player", `body_${this.bodyType}_hand_left_bottom`);
-        this.leftHandTop     = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_hand_left_top`);
+        if (this.optic !== 1) {
+            this.opticOver.alpha = 0;
+        }
+        this.headOver       = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_head_over`);
+        this.leftHandGroup  = this.game.make.sprite(0, 193, "player", "group_leftHand");
+        this.leftHandBottom = this.game.make.sprite(2, 107, "player", `body_${this.bodyType}_hand_left_bottom`);
+        this.leftHandTop    = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_hand_left_top`);
 
 
         this.addToParent(this.lowerBodyGroup, this.bodyGroup, 72, 28);

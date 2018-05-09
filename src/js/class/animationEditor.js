@@ -18,7 +18,7 @@ class AnimationEditor {
         this.defualtFrame = this.object.frame;
 
         // calc
-        this.frame = this.object.second * this.object.fps;
+        this.frame = (this.object.second < 1000 ? this.object.fps : (this.object.second / 1000) * this.object.fps);
 
         // add css
         this.addStyle();
@@ -66,7 +66,7 @@ class AnimationEditor {
                         that.setFrame(this.setFrameIndex);
                         this.setFrameIndex++;
                     }
-                }, ((this.object.second * 1000) / this.frame));
+                }, (this.object.second / this.frame));
             }
         });
         this.renderBtn.addEventListener("click", () => {
@@ -146,7 +146,7 @@ class AnimationEditor {
                                 if (that.defualtFrame.hasOwnProperty(i)) {
                                     that.defualtFrame[i].forEach((frameValue, frameIndex) => {
                                         if ((frameValue[0] === v[0]) && (frameValue[1] === _v)) {
-                                            input.value = Math.floor(frameValue[2]);
+                                            input.value = Math.floor(that.state.target[v[0]][_v]) + Math.floor(frameValue[2]);
                                             input.setAttribute("class", "change");
                                         }
                                     });
@@ -202,6 +202,8 @@ class AnimationEditor {
             object[i] = [];
         }
 
+        let resetFrame = that.object.frame[0];
+
         // fill object
         this.object.config.forEach((v, i) => {
             v[1].forEach((_v, _i) => {
@@ -209,7 +211,17 @@ class AnimationEditor {
                     let el = document.getElementById(`frame_${index}__${v[0]}_${_v}`);
                     if (el.hasAttribute("class")) {
                         if (el.getAttribute("class") === "change") {
-                            object[index].push([v[0], _v, el.value]);
+                            let value = el.value;
+                            if (_v !== "rotation") {
+                                let resetValue = 0;
+                                resetFrame.forEach((resetFrameValue, resetFrameIndex) => {
+                                    if ((v[0] === resetFrameValue[0]) && (_v === resetFrameValue[1])) {
+                                        resetValue = resetFrameValue[2];
+                                    }
+                                });
+                                value = el.value - resetValue;
+                            }
+                            object[index].push([v[0], _v, value]);
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 const Animation = require("../../animation");
 const idle      = require("./object/idle");
+const jump      = require("./object/jump");
 
 class PlayerAnimationClass extends Animation {
     constructor(scene) {
@@ -11,6 +12,7 @@ class PlayerAnimationClass extends Animation {
 
         // call animation creator
         this.idleCreate();
+        this.jumpCreate();
 
         /* comment after debug animation */
         this.addAnimationEditor("idle");
@@ -19,6 +21,23 @@ class PlayerAnimationClass extends Animation {
 
     idleCreate() {
         let config = [
+            ["headGroup", ["rotation", "y"]],
+            ["upperBodyGroup", ["y"]],
+            ["leftHandGroup", ["rotation"]],
+            ["rightHandGroup", ["rotation"]],
+            ["leftFootGroup", ["rotation"]],
+            ["rightFootGroup", ["rotation"]],
+            ["leftFootBottom", ["rotation"]],
+            ["rightFootBottom", ["rotation"]]
+        ];
+
+        // add this animation
+        // {animateKey:string,animateFrame:object,animateTime:int,AnimateLoop:int,animateDelay:int,animateConfig:array}
+        this.addAnimate("idle", idle, 1000, 8, -1, 200, config);
+    }
+
+    jumpCreate() {
+        let config = [
             ["headGroup", ["rotation"]],
             ["upperBodyGroup", ["rotation"]],
             ["leftHandBottom", ["rotation"]],
@@ -26,7 +45,8 @@ class PlayerAnimationClass extends Animation {
         ];
 
         // add this animation
-        this.addAnimate("idle", idle, 1, 10, -1, 1000, config);
+        // {animateKey:string,animateFrame:object,animateTime:int,AnimateLoop:int,animateDelay:int,animateConfig:array}
+        this.addAnimate("jump", jump, 1000, 6, -1, 1000, config);
     }
 
     /* comment after debug animation */

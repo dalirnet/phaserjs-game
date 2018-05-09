@@ -8,23 +8,26 @@ class Animation {
         this.animate = {};
     }
 
-    addAnimate(key, frame = {}, second = 1, fps = 5, loop = 1, delay = 0, config = []) {
+    addAnimate(key, frame = {}, second = 1000, fps = 5, loop = 1, delay = 0, config = []) {
         // init var
         let that = this;
 
         // create animate key
         this.animate[key] = {
-            second    : second,
-            fps       : fps,
-            loop      : loop,
-            delay     : (delay > 0 ? (delay + (second * 1000)) : 0),
-            frame     : frame,
-            config    : config,
-            timer     : {},
-            delayTimer: {},
-            isRun     : false,
-            lastFrame : 1,
-            runTime   : 0
+            // second * 1000
+            second       : second,
+            fps          : fps,
+            allFrameCount: (second < 1000 ? fps : (second / 1000) * fps),
+            loop         : loop,
+            delay        : (delay > 0 ? (delay + second) : 0),
+            frame        : frame,
+            config       : config,
+            timer        : {},
+            delayTimer   : {},
+            isRun        : false,
+            lastFrame    : 1,
+            runTime      : 0,
+            firstValue   : {}
         };
 
         // init empty array for reset frame
@@ -32,7 +35,11 @@ class Animation {
 
         // add reset frame
         config.forEach((v, i) => {
+            that.animate[key].firstValue[v[0]] = {};
             v[1].forEach((_v, _i) => {
+                if (_v !== "rotation") {
+                    that.animate[key].firstValue[v[0]][_v] = that.target[v[0]][_v];
+                }
                 that.animate[key].frame[0].push([v[0], _v, that.target[v[0]][_v]]);
             });
         });
@@ -102,9 +109,9 @@ class Animation {
 
         // create timer key
         this.animate[key].timer = this.scene.game.time.create();
-        this.animate[key].timer.loop(Math.floor((this.animate[key].second * 1000) / this.animate[key].fps), () => {
+        this.animate[key].timer.loop(this.animate[key].second / this.animate[key].fps, () => {
             this.setFrame(key, this.animate[key].lastFrame);
-            if (this.animate[key].lastFrame < (this.animate[key].second * this.animate[key].fps)) {
+            if (this.animate[key].lastFrame < this.animate[key].allFrameCount) {
                 this.animate[key].lastFrame++;
             }
             else {
@@ -128,7 +135,12 @@ class Animation {
 
     setFrame(key, index) {
         this.animate[key].frame[index].forEach((v) => {
-            this.target[v[0]][v[1]] = v[2];
+            if (v[1] !== "rotation" && index > 0) {
+                this.target[v[0]][v[1]] = this.animate[key].firstValue[v[0]][v[1]] + v[2];
+            }
+            else {
+                this.target[v[0]][v[1]] = v[2];
+            }
         });
     }
 }
