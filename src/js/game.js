@@ -63,6 +63,12 @@ window.addEventListener("load", function () {
             urls    : ["/dist/css/font.css"]
         }
     });
+
+    // handle microsoft product
+    if (platform.name === "Microsoft Edge" || platform.name === "IE") {
+        gameObject.state.start("Level_1");
+    }
+
     let redrawAction  = () => {
         helper.domObject("loading", true, "display", false);
         helper.domObject("game", false, "visibility", false);
