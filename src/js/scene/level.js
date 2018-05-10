@@ -18,15 +18,7 @@ class Level extends Scene {
         this.levelFrame  = {};
         this.levelImage  = {};
         this.levelLock   = {};
-        let framePadding = 25 * this.game.screenScale;
-
-        // calc responsive
-        if (this.game.isMobile) {
-            framePadding = 10 * this.game.screenScale;
-            if (this.game.scale.isGameLandscape) {
-                framePadding = 7 * this.game.screenScale;
-            }
-        }
+        let framePadding = (this.game.isMobile ? 10 : 50) * this.game.screenScale;
 
         // calc best size for image item
         this.maxSizeOfImage = 0;

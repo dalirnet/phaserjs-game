@@ -28,7 +28,6 @@ class Scene {
 
         // init my var
         let that                  = this;
-        this.imgObj               = {};
         this.isPopupOpen          = false;
         this.saveCoins            = 0;
         this.coinAmountUpdateNeed = false;
@@ -75,18 +74,6 @@ class Scene {
         if (loadPlayer) {
             this.game.player.preload();
         }
-
-        // calc scale for all image loaded
-        this.game.load.onFileComplete.add(function (e, r) {
-            helper.loadingProcess(e);
-            let thisObject   = that.game.cache.getItem(r, Phaser.Cache.IMAGE);
-            that.imgObj[r]   = {
-                s: Math.round(((Math.round((1 / ((thisObject.base.width / thisObject.base.height) / that.game.screenScale)) * 100) / 100) / thisObject.frameData._frames.length) * 100) / 100,
-                w: thisObject.base.width,
-                h: thisObject.base.height,
-            };
-            thisObject.scale = that.imgObj[r].s;
-        });
     }
 
     create(isPopupType = false) {
@@ -100,7 +87,7 @@ class Scene {
         this.backgroundStar.scale.setTo(this.game.screenScale * 0.2, this.game.screenScale * 0.2);
 
         // add background
-        this.background = this.game.add.tileSprite(this.game.world.centerX, 0, this.game.width / (this.game.screenScale * 0.2), this.imgObj["background"].h, "background");
+        this.background = this.game.add.tileSprite(this.game.world.centerX, 0, this.game.width / (this.game.screenScale * 0.2), this.game.cache.getFrameByIndex("background", 0).height, "background");
         this.background.anchor.set(0.5, 1);
         this.background.y        = this.game.height * 0.88;
         this.game.groundPosition = this.background.y - (15 * this.game.screenScale);
