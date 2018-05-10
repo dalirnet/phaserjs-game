@@ -19,6 +19,9 @@ class Scene {
 
         // load animation instance
         this.animation = new Animation(this);
+
+        // player direction
+        this.direction = "toRight";
     }
 
     preload(loadAssets = true, loadPlayer = true) {
@@ -361,9 +364,17 @@ class Scene {
     }
 
     update() {
+        if (this.direction == "toRight") {
+            this.backgroundStar.tilePosition.x += 1;
+            this.background.tilePosition.x -= 0.8;
+        }
+        else {
+            this.backgroundStar.tilePosition.x -= 1;
+            this.background.tilePosition.x += 0.8;
+        }
         this.backgroundStar.tilePosition.y -= 1;
-        this.backgroundStar.tilePosition.x += 1;
-        this.background.tilePosition.x -= 0.8;
+
+        // coins value count update
         this.coinsValueUpdate();
     }
 }

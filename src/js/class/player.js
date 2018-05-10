@@ -7,12 +7,13 @@ class Player {
         this.name        = "";
         this.saveCoins   = 0;
         this.activeLevel = 1;
-        this.bodyType    = 3;
-        this.faceType    = 2;
-        this.beardType   = 3;
+        this.bodyType    = 2;
+        this.faceType    = 1;
+        this.beardType   = 4;
         this.eyesType    = 1;
-        this.optic       = 1;
+        this.optic       = 0;
         this.idleAnimate = [];
+        this.direction   = "";
 
         // animation handel
         this.animationHandel = false;
@@ -33,7 +34,7 @@ class Player {
         this.rightFootGroup  = this.game.make.sprite(60, 5, "player", "group_rightFoot");
         this.rightFootBottom = this.game.make.sprite(0, 132, "player", `body_${this.bodyType}_foot_right_bottom`);
         this.rightFootTop    = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_foot_right_top`);
-        this.leftFootGroup   = this.game.make.sprite(0, 0, "player", "group_leftFoot");
+        this.leftFootGroup   = this.game.make.sprite(5, 0, "player", "group_leftFoot");
         this.leftFootBottom  = this.game.make.sprite(3, 142, "player", `body_${this.bodyType}_foot_left_bottom`);
         this.leftFootTop     = this.game.make.sprite(0, 0, "player", `body_${this.bodyType}_foot_left_top`);
         this.upperBodyGroup  = this.game.make.sprite(0, 0, "player", "group_upperBody");
@@ -73,8 +74,20 @@ class Player {
         this.addToParent(this.leftHandBottom, this.leftHandGroup, 28, 15);
         this.addToParent(this.leftHandTop, this.leftHandGroup, 0, 0);
 
-        // scale player object
-        this.bodyGroup.scale.setTo(this.game.screenScale * 0.16, this.game.screenScale * 0.16);
+        // scale player object and set direction
+        this.changeDirection();
+    }
+
+    changeDirection(type = "toRight") {
+        if (type === "toRight") {
+            this.bodyGroup.scale.setTo(this.game.screenScale * 0.16, this.game.screenScale * 0.16);
+        }
+        else {
+            this.bodyGroup.scale.setTo((this.game.screenScale * 0.16) * -1, this.game.screenScale * 0.16);
+        }
+        this.direction       = type;
+        this.state.direction = this.direction;
+
     }
 
     initAnimation() {
@@ -108,6 +121,14 @@ class Player {
         } else {
             this.animation.start("jump");
         }
+    }
+
+    changeFaceType(type = 1) {
+        if (type > 5 || type < 1) {
+            type = 1;
+        }
+        this.faceType = type;
+        this.face.loadTexture("player", `face_${this.faceType}_${this.beardType}_${this.eyesType}`);
     }
 
     addToParent(sprite, parent, anchorX, anchorY) {

@@ -64,12 +64,12 @@ class Animation {
             // loop frame
             if (this.animate[key].delay > 0) {
                 this.loopFrame(key, true);
-                this.animate[key].delayTimet = this.scene.game.time.create();
-                this.animate[key].delayTimet.loop(this.animate[key].delay, () => {
+                this.animate[key].delayTimer = this.scene.game.time.create();
+                this.animate[key].delayTimer.loop(this.animate[key].delay, () => {
                     this.loopFrame(key, true);
                 }, this);
                 // start delay timer
-                this.animate[key].delayTimet.start();
+                this.animate[key].delayTimer.start();
             }
             else {
                 this.loopFrame(key);
@@ -91,7 +91,7 @@ class Animation {
             // delay loop stop
             if (this.animate[key].delay > 0) {
                 // delay loop stop
-                this.animate[key].delayTimet.stop();
+                this.animate[key].delayTimer.stop();
             }
 
             // loop frame stop

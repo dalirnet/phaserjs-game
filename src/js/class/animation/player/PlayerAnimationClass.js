@@ -55,7 +55,7 @@ class PlayerAnimationClass extends Animation {
         this.addAnimate("jump", jump, 500, 8, 1, 0, config);
 
         // long jump
-        this.addAnimate("long_jump", jump, 700, 8, 1, 0, config);
+        this.addAnimate("long_jump", jump, 600, 8, 1, 0, config);
     }
 
     /* comment after debug animation */

@@ -17,6 +17,7 @@ class Level extends Scene {
         this.leftSpace         = this.tileLeftMargin * 4;
         this.enterTile         = -1;
         this.longJumpTileIndex = [];
+        this.moving            = false;
     }
 
     create() {
@@ -24,6 +25,17 @@ class Level extends Scene {
 
         // create player
         this.game.player.create(this);
+
+        // add key control
+        let movePlayerToLeft = this.game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+        movePlayerToLeft.onDown.add(() => {
+            this.movePlayer((this.enterTile - 1), true);
+        }, this);
+
+        let movePlayerToRight = this.game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+        movePlayerToRight.onDown.add(() => {
+            this.movePlayer((this.enterTile + 1), true);
+        }, this);
     }
 
     initGameSpace() {
@@ -156,44 +168,58 @@ class Level extends Scene {
     }
 
     jumpPlayer(targetPos, longJump = false) {
-        let jumpTime = (longJump ? 700 : 500);
+        let jumpTime = (longJump ? 600 : 500);
         this.game.player.idle(false, true);
         this.game.player.jump(longJump);
         let currentPos = this.gameTile[`tileBase${this.enterTile}`];
         let startTween = this.game.add.tween(this.game.player.bodyGroup).to({
             x: currentPos.x + ((targetPos.x + (targetPos.width * 0.4) - currentPos.x + (currentPos.width * 0.4)) * 0.5),
-            y: targetPos.y - (targetPos.height * (longJump ? 2 : 0.8))
+            y: targetPos.y - (longJump ? targetPos.height * 1.4 : targetPos.height * 0.8)
         }, (jumpTime * 0.4), Phaser.Easing.Linear.None, true);
         startTween.onComplete.add(() => {
             let endTween = this.game.add.tween(this.game.player.bodyGroup).to({
-                x: targetPos.x + (targetPos.width * 0.4),
+                x: targetPos.x + (targetPos.width * 0.5),
                 y: targetPos.y - (targetPos.height * 0.5)
             }, (jumpTime * 0.6), Phaser.Easing.Linear.None, true);
             endTween.onComplete.add(() => {
-                this.game.player.idle();
+                this.game.time.events.add(Phaser.Timer.SECOND / 20, () => {
+                    this.game.player.idle();
+                    this.moving = false;
+                }, this).autoDestroy = true;
             }, this);
         }, this);
     }
 
     movePlayer(id = 0, jump = true) {
-        if (this.enterTile < id && Math.abs(id - this.enterTile) === 1) {
-            let targetPos = this.gameTile[`tileBase${id}`];
-            if (jump) {
-                this.jumpPlayer(targetPos, (this.longJumpTileIndex.indexOf(id) !== -1));
+        if (!this.moving) {
+            if (id < 0 || id >= this.tileBaseIndex) {
+                this.movePlayerWarning();
+                return;
+            }
+            this.moving = true;
+            if (Math.abs(id - this.enterTile) === 1) {
+                this.game.player.changeDirection((this.enterTile < id ? "toRight" : "toLeft"));
+                let targetPos = this.gameTile[`tileBase${id}`];
+                if (jump) {
+                    this.game.player.changeFaceType(1);
+                    this.jumpPlayer(targetPos, (this.enterTile < id ? this.longJumpTileIndex.indexOf(id) !== -1 : this.longJumpTileIndex.indexOf(this.enterTile) !== -1));
+                }
+                else {
+                    this.game.player.bodyGroup.x = targetPos.x + (targetPos.width * 0.5);
+                    this.game.player.bodyGroup.y = targetPos.y - (targetPos.height * 0.5);
+                    this.moving                  = false;
+                }
+                this.enterTile = id;
             }
             else {
-                this.game.player.bodyGroup.x = targetPos.x + (targetPos.width * 0.4);
-                this.game.player.bodyGroup.y = targetPos.y - (targetPos.height * 0.5);
+                this.movePlayerWarning();
             }
-            this.enterTile = id;
-        }
-        else {
-            this.movePlayerWarning();
         }
     }
 
     movePlayerWarning() {
-
+        this.game.player.changeFaceType(3);
+        this.moving = false;
     }
 
     update() {

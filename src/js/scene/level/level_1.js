@@ -22,7 +22,7 @@ class Level_1 extends Level {
         this.addBaseTile();
         this.addBaseTile();
         this.addMainTile("_1_00", () => {
-
+            this.game.player.changeFaceType(5);
         });
         this.addBaseTile();
         this.addBaseTile();
@@ -32,6 +32,8 @@ class Level_1 extends Level {
 
 
         });
+        this.addBaseTile();
+        this.addBaseTile();
 
         // add player to game space
         this.addPlayer(0);

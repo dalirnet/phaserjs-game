@@ -28,6 +28,15 @@ class Level extends Scene {
             }
         }
 
+        // calc best size for image item
+        this.maxSizeOfImage = 0;
+        for (let i = 1; i <= 9; i++) {
+            let size = this.game.cache.getFrameData("tile").getFrameByName(`_${i}_00`);
+            if (this.maxSizeOfImage < size.height) {
+                this.maxSizeOfImage = size.height;
+            }
+        }
+
         // add group bounds
         this.frameGroup._width  = this.stateBounds.width._size - ((framePadding * 2) * this.game.screenScale);
         this.frameGroup._height = this.stateBounds.height._size - ((framePadding * 2) * this.game.screenScale);
@@ -44,19 +53,7 @@ class Level extends Scene {
     }
 
     addLevelItem(id) {
-        let activeLevel   = false;
-        this.currentScale = (this.game.screenScale * 0.22);
-        let that          = this;
-
-        // calc responsive
-        if (this.game.isMobile) {
-            if (this.game.scale.isGameLandscape) {
-                this.currentScale = this.game.screenScale * 0.16;
-            }
-            else {
-                this.currentScale = this.game.screenScale * 0.2;
-            }
-        }
+        let activeLevel = false;
 
         if (id <= this.game.player.activeLevel) {
             activeLevel = true;
@@ -72,10 +69,14 @@ class Level extends Scene {
             y     : (sort.y * (this.frameGroup._height * 0.05)) + (sort.y * (this.frameGroup._height * 0.3))
         };
 
+        // scale
+        this.currentScale = bounds.width / this.maxSizeOfImage;
+
+        // add item
         this.levelFrame[id] = new Phaser.Rectangle(bounds.x, bounds.y, bounds.width, bounds.height);
         this.levelImage[id] = this.game.add.sprite(0, 0, "tile", `_${id}_00`);
-        this.levelImage[id].anchor.setTo(0.5, 1);
-        this.levelImage[id].scale.setTo(this.currentScale, this.currentScale);
+        this.levelImage[id].anchor.setTo(0.5, 0.5);
+        this.levelImage[id].scale.setTo(bounds.width / this.maxSizeOfImage, bounds.width / this.maxSizeOfImage);
         this.levelImage[id].alignIn(this.levelFrame[id], Phaser.BOTTOM_CENTER);
         this.levelImage[id].inputEnabled            = true;
         this.levelImage[id].input.pixelPerfectClick = true;
@@ -93,13 +94,13 @@ class Level extends Scene {
             this.levelLock[id] = this.game.add.image(0, 0, "btn", btnImage);
             this.levelLock[id].anchor.set(0.5, 0.5);
             this.levelLock[id].scale.setTo(this.currentScale, this.currentScale);
-            this.levelLock[id].alignIn(this.levelImage[id], Phaser.CENTER, 10 * this.currentScale, 40 * this.currentScale);
+            this.levelLock[id].alignIn(this.levelImage[id], Phaser.CENTER);
             this.frameGroup.add(this.levelLock[id]);
             this.levelImage[id].events.onInputDown.add(this.alertInactiveLevel, this);
         }
         else {
             this.levelImage[id].events.onInputDown.add(this.startState.bind(this, `Level_${id}`), this);
-            if (id == this.game.player.activeLevel) {
+            if (id === this.game.player.activeLevel) {
                 this.game.add.tween(this.levelImage[id].scale).to({
                     x: this.currentScale + (0.025 * this.currentScale),
                     y: this.currentScale + (0.025 * this.currentScale)
