@@ -51,16 +51,18 @@ class PlayerAnimationClass extends Animation {
             ["rightFootBottom", ["rotation"]]
         ];
 
-        // add this animation
-        // {animateKey:string,animateFrame:object,animateTime:int,AnimateLoop:int,animateDelay:int,animateConfig:array}
-        this.addAnimate("jump", jump, 500, 6, 1, 0, config);
+        // short jump
+        this.addAnimate("jump", jump, 500, 8, 1, 0, config);
+
+        // long jump
+        this.addAnimate("long_jump", jump, 700, 8, 1, 0, config);
     }
 
     /* comment after debug animation */
-    addAnimationEditor(key) {
-        const AnimationEditor = require("../../animationEditor");
-        this.editor           = new AnimationEditor(this, key);
-    }
+    // addAnimationEditor(key) {
+    //     const AnimationEditor = require("../../animationEditor");
+    //     this.editor           = new AnimationEditor(this, key);
+    // }
 
     /* _____________________________ */
 }

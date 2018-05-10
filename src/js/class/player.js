@@ -7,11 +7,11 @@ class Player {
         this.name        = "";
         this.saveCoins   = 0;
         this.activeLevel = 1;
-        this.bodyType    = 1;
-        this.faceType    = 1;
-        this.beardType   = 4;
+        this.bodyType    = 3;
+        this.faceType    = 2;
+        this.beardType   = 3;
         this.eyesType    = 1;
-        this.optic       = 0;
+        this.optic       = 1;
         this.idleAnimate = [];
 
         // animation handel
@@ -101,13 +101,12 @@ class Player {
         }
     }
 
-    jump(status = true, resetFrame = false) {
+    jump(longJump = false) {
         this.checkForAnimationHandel();
-        if (status) {
+        if (longJump) {
+            this.animation.start("long_jump");
+        } else {
             this.animation.start("jump");
-        }
-        else {
-            this.animation.stop("jump", resetFrame);
         }
     }
 

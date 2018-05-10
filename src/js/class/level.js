@@ -11,11 +11,12 @@ class Level extends Scene {
         this.game.load.atlasJSONHash("tileBase", "dist/image/tileBase.png", "dist/json/tileBase.json");
 
         // init my var
-        this.gameTile       = {};
-        this.tileBaseIndex  = 0;
-        this.tileLeftMargin = 10 * this.game.screenScale;
-        this.leftSpace      = this.tileLeftMargin * 4;
-        this.enterTile      = -1;
+        this.gameTile          = {};
+        this.tileBaseIndex     = 0;
+        this.tileLeftMargin    = 10 * this.game.screenScale;
+        this.leftSpace         = this.tileLeftMargin * 4;
+        this.enterTile         = -1;
+        this.longJumpTileIndex = [];
     }
 
     create() {
@@ -104,6 +105,7 @@ class Level extends Scene {
         // add
         this.gamePlayeSpace.add(tile);
         this.gameTile[id] = tile;
+        this.longJumpTileIndex.push(this.tileBaseIndex);
 
         // renew left space
         this.leftSpace += tile.width + this.tileLeftMargin;
@@ -153,67 +155,31 @@ class Level extends Scene {
         this.game.player.idle();
     }
 
-    jumpPlayer(id = 0) {
-
-        let tilePos = this.gameTile[`tileBase${id}`];
-
-
-        // this.game.player.idle(false);
-        this.game.add.tween(this.game.player.headGroup).to({rotation: 0.1}, 200, "Linear", true);
-
-        this.game.add.tween(this.game.player.leftFootGroup).to({rotation: -0.2}, 200, "Linear", true);
-        this.game.add.tween(this.game.player.rightFootGroup).to({rotation: -0.2}, 200, "Linear", true);
-
-        this.game.add.tween(this.game.player.leftFootBottom).to({rotation: 0.4}, 200, "Linear", true);
-        this.game.add.tween(this.game.player.rightFootBottom).to({rotation: 0.4}, 200, "Linear", true);
-
-        this.game.add.tween(this.game.player.upperBodyGroup).to({
-            rotation: 0.03,
-            y       : this.game.player.upperBodyGroup.y + 20
-        }, 200, "Linear", true);
-
-        this.game.add.tween(this.game.player.leftHandGroup).to({rotation: 0.3}, 200, "Linear", true);
-        this.game.add.tween(this.game.player.rightHandGroup).to({rotation: 0.3}, 200, "Linear", true);
-
-        this.game.add.tween(this.game.player.leftHandBottom).to({rotation: -0.4}, 200, "Linear", true);
-        this.game.add.tween(this.game.player.rightHandBottom).to({rotation: -0.4}, 200, "Linear", true);
-
-        let pos = {
-            x: this.game.player.bodyGroup.x + 150,
-            y: this.game.player.bodyGroup.y - 80
-        };
-
-        this.game.add.tween(this.game.player.bodyGroup).to({
-            rotation: 0,
-            x       : pos.x,
-            y       : pos.y
-        }, 300, "Linear", true, 300);
-
-
-        // this.game.add.tween(this.game.player.bodyGroup).to({y: this.game.player.bodyGroup.y - 80}, 200, "Linear", true);
-
+    jumpPlayer(targetPos, longJump = false) {
+        let jumpTime = (longJump ? 700 : 500);
+        this.game.player.idle(false, true);
+        this.game.player.jump(longJump);
+        let currentPos = this.gameTile[`tileBase${this.enterTile}`];
+        let startTween = this.game.add.tween(this.game.player.bodyGroup).to({
+            x: currentPos.x + ((targetPos.x + (targetPos.width * 0.4) - currentPos.x + (currentPos.width * 0.4)) * 0.5),
+            y: targetPos.y - (targetPos.height * (longJump ? 2 : 0.8))
+        }, (jumpTime * 0.4), Phaser.Easing.Linear.None, true);
+        startTween.onComplete.add(() => {
+            let endTween = this.game.add.tween(this.game.player.bodyGroup).to({
+                x: targetPos.x + (targetPos.width * 0.4),
+                y: targetPos.y - (targetPos.height * 0.5)
+            }, (jumpTime * 0.6), Phaser.Easing.Linear.None, true);
+            endTween.onComplete.add(() => {
+                this.game.player.idle();
+            }, this);
+        }, this);
     }
 
     movePlayer(id = 0, jump = true) {
         if (this.enterTile < id && Math.abs(id - this.enterTile) === 1) {
             let targetPos = this.gameTile[`tileBase${id}`];
             if (jump) {
-                this.game.player.idle(false, true);
-                this.game.player.jump();
-                let currentPos = this.gameTile[`tileBase${this.enterTile}`];
-                let startTween = this.game.add.tween(this.game.player.bodyGroup).to({
-                    x: currentPos.x + ((targetPos.x + (targetPos.width * 0.4) - currentPos.x + (currentPos.width * 0.4)) * 0.8),
-                    y: targetPos.y - (targetPos.height * 0.8)
-                }, 300, Phaser.Easing.Linear.None, true);
-                startTween.onComplete.add(() => {
-                    let endTween = this.game.add.tween(this.game.player.bodyGroup).to({
-                        x: targetPos.x + (targetPos.width * 0.4),
-                        y: targetPos.y - (targetPos.height * 0.5)
-                    }, 200, Phaser.Easing.Linear.None, true);
-                    endTween.onComplete.add(() => {
-                        this.game.player.idle();
-                    }, this);
-                }, this);
+                this.jumpPlayer(targetPos, (this.longJumpTileIndex.indexOf(id) !== -1));
             }
             else {
                 this.game.player.bodyGroup.x = targetPos.x + (targetPos.width * 0.4);
