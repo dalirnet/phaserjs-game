@@ -1,5 +1,5 @@
 # phaserjs-game
-a professional game with phaser.js :)
+a game idea with phaser.js :)
 
 [demo](https://dalirnet.github.io/phaserjs-game/)
 
